@@ -29,7 +29,7 @@ public class InstrumentoControlador {
 
     @GetMapping(path = "/{id}")
     public Optional<Instrumento> getInstrumentoById(@PathVariable int id){
-        return this.intrumentoServicio.getById(id);
+        return Optional.ofNullable(this.intrumentoServicio.getInstrumentoById(id));
     }
     @PutMapping(path = "/{id}")
     public Instrumento updateInstrumentoById(@RequestBody Instrumento instrumento, @PathVariable("id") int id){

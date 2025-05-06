@@ -1,61 +1,84 @@
+/* Estilos para la tarjeta del instrumento */
+.instrumento-card {
+  display: flex;
+  justify-content: space-between; /* Separa los elementos */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative; /* Necesario para algunos posicionamientos */
+}
+
+/* Contenedor de la imagen y detalles */
 .instrumento-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  
+  flex: 1; /* Ocupa todo el espacio disponible */
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  padding-right: 15px; /* Espacio antes de los botones */
+}
+
+/* Contenedor de los botones */
+.card-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+  align-items: flex-end; /* Alinea a la derecha */
+  padding: 15px;
+  gap: 10px; /* Separación entre botones */
+  min-width: 180px; /* Ancho mínimo para los botones */
+  margin-left: auto; /* Empuja los botones a la derecha */
+}
+
+/* Estilos para los botones */
+.card-buttons .btn {
+  width: auto;
+  min-width: 150px; /* Ancho consistente para ambos botones */
+  padding: 8px 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover para los botones */
+.card-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Ajustes para la imagen */
+.instrumento-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Ajustes para el cuerpo de la tarjeta */
+.card-body {
+  padding: 15px;
+  flex: 1;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
   .instrumento-card {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-decoration: none;
+    flex-direction: column;
   }
   
-  .instrumento-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  .card-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px 15px;
+    min-width: auto;
+    margin-left: 0;
   }
   
   .instrumento-img {
-    width: 140px;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 8px;
+    width: 100%;
+    height: auto;
   }
   
-  .instrumento-titulo {
-    text-decoration: none;
-    margin: 0;
-    font-size: 1.4rem;
-    color: #333;
+  .card-buttons .btn {
+    min-width: 120px;
   }
-  
-  .instrumento-precio {
-    font-size: 1.6rem;
-    font-weight: bold;
-    margin: 0.5rem 0;
-    color: #2e7d32;
-  }
-  
-  .instrumento-envio {
-    margin: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-  }
-  
-  .instrumento-envio-icono {
-    width: 22px;
-    height: 22px;
-  }
-  
-  .instrumento-vendidos {
-    font-size: 0.95rem;
-    color: #666;
-  }
-  
+}

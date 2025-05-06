@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CarritoContext";
 
 
 const Navbar = () => {
+  const { totalItems } = useCart();
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
        <div className="container-fluid">
@@ -11,6 +13,17 @@ const Navbar = () => {
           <Link className="nav-link px-3" to="/dondeEstamos">Dónde Estamos</Link>
           <Link className="nav-link px-3" to="/instrumento">Productos</Link>
           <Link className="nav-link px-3" to="/Grilla">Grilla</Link>
+           <Link
+                  to="/cart"
+                  className="nav-link px-3"
+                >
+                  <i className="bi bi-cart"></i>
+                  {totalItems > 0 && (
+                    <span className="badge bg-danger rounded-pill">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
         </div>
       </div>
     </nav>

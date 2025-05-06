@@ -13,6 +13,7 @@ import java.util.Optional;
 public class InstrumentoServicio {
     @Autowired
     InstrumentoDAO instrumentoDAO;
+
     public List<Instrumento> getInstrumento(){
         return (List<Instrumento>) instrumentoDAO.findAll();
     }
@@ -21,9 +22,13 @@ public class InstrumentoServicio {
         return instrumentoDAO.save(intrumento);
     }
 
-    public Optional<Instrumento> getById(int id){
-        return instrumentoDAO.findById(id);
+    public Instrumento getInstrumentoById(int id) {
+        return instrumentoDAO.findById(id)
+                .orElseThrow(() -> new RuntimeException("Instrumento no encontrado con id: " + id));
     }
+
+
+
     public Instrumento updateById(Instrumento request, int id) {
         Optional<Instrumento> optionalInstrumento = instrumentoDAO.findById(id);
         if (optionalInstrumento.isPresent()) {

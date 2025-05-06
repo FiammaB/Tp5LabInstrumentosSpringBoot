@@ -1,6 +1,7 @@
 // src/controllers/InstrumentoController.ts
 import { Instrumento } from "../models/Instrumento";
 
+
 const API_URL = "http://localhost:8080/instrumento";
 
 class InstrumentoController {
@@ -18,7 +19,7 @@ class InstrumentoController {
     }
     return response.json();
   }
-  static async crearInstrumento(instrumento: Instrumento): Promise<Instrumento> { 
+  static async crearInstrumento(instrumento: Instrumento): Promise<Instrumento> {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -31,7 +32,7 @@ class InstrumentoController {
     }
     return response.json();
   }
-  static async actualizarInstrumento(instrumento: Instrumento): Promise<Instrumento> {  
+  static async actualizarInstrumento(instrumento: Instrumento): Promise<Instrumento> {
     const response = await fetch(`${API_URL}/${instrumento.id}`, {
       method: "PUT",
       headers: {
@@ -55,24 +56,21 @@ class InstrumentoController {
   static async subirImagen(imagen: File): Promise<string> {
     const formData = new FormData();
     formData.append('file', imagen);
-  
+
     const response = await fetch('http://localhost:8080/upload/imagen', {
       method: 'POST',
       body: formData,
     });
-  
+
     if (!response.ok) {
       throw new Error('Error al subir imagen');
     }
-  
+
     return response.text();
   }
-  
-  
-  // Si después querés agregar más métodos:
-  // static async crearInstrumento(data: Instrumento): Promise<Instrumento> { ... }
-  // static async eliminarInstrumento(id: number): Promise<void> { ... }
-  // etc.
+
+
+
 }
 
 export default InstrumentoController;

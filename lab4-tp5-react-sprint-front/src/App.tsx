@@ -7,11 +7,14 @@ import Home from './components/Home';
 import DondeEstamos from './components/DondeEstamos';
 import Grilla from './components/Grilla';
 import Formulario from './components/Formulario';
+import { CartProvider } from './context/CarritoContext';
+import CartPagina from './components/Cart/pageCarrito'; // Cambié el nombre a "cartPagin" para evitar confusiones
 // si es un navbar propio
 
 function App() {
   return (
     <>
+     <CartProvider>
       <Navbar /> {/* Navbar visible en todas las páginas */}
 
       <Routes>
@@ -21,7 +24,9 @@ function App() {
         <Route path='/dondeEstamos' element={<DondeEstamos/>} />
         <Route path='/grilla' element={<Grilla/>} />
         <Route path='/Formulario' element={<Formulario/>} />
+        <Route path='/cart' element={<CartPagina/>} />
       </Routes>
+      </CartProvider>
     </>
   );
 }

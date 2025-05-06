@@ -6,12 +6,15 @@ import { Instrumento } from "../models/Instrumento";
 
 import './InstrumentoDetalle.css';
 import InstrumentoController from "../controllers/InstrumentoController";
+import { useCart } from "../context/CarritoContext";
 
 const InstrumentoDetalle: React.FC = () => {
+  const { addToCart } = useCart();
   const { id } = useParams<{ id: string }>();
   const [instrumento, setInstrumento] = useState<Instrumento | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addedToCart, setAddedToCart] = useState(false);
   //const { id } = useParams<{ id: string }>();
   //const instrumento: Instrumento | undefined = instrumento.instrumentos.find((i) => i.id === id);
 useEffect(()=> {
@@ -26,7 +29,32 @@ useEffect(()=> {
     }
   );
   }, [id]);
+  const handleAddToCart = () => {
+    if (instrumento && !addedToCart) {
+      addToCart(instrumento);
+      setAddedToCart(true);
+    }
+  };
 
+  if (loading) {
+    return (
+      <div className="container text-center mt-5">Cargando instrumento...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container text-center mt-5 text-danger">{error}</div>
+    );
+  }
+
+  if (!instrumento) {
+    return (
+      <div className="container text-center mt-5">
+        Instrumento no encontrado
+      </div>
+    );
+  }
 if (loading) return <p>Cargando instrumento...</p>;
 if (error) return <p>Error: {error}</p>;
   if (!instrumento) return <p>Instrumento no encontrado</p>;
@@ -55,7 +83,21 @@ if (error) return <p>Error: {error}</p>;
   </span>
 </p>
 
-        <button className="instrumento-agregar-carrito">Agregar al carrito</button>
+<button
+            className={`btn px-4 py-2 mb-4 ${
+              addedToCart ? "btn-success" : "btn-primary"
+            }`}
+            onClick={handleAddToCart}
+            disabled={addedToCart}
+          >
+            {addedToCart ? (
+              <>
+                <i className="bi bi-check-circle me-2"></i> Agregado
+              </>
+            ) : (
+              "Agregar al carrito"
+            )}
+          </button>
         <p><strong>Descripción:</strong> {instrumento.descripcion}</p>
       </div>
     </div>
