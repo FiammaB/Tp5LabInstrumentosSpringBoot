@@ -61,25 +61,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const finalizarPedido = async (): Promise<string> => {
     try {
-      const pedidoParaEnviar: Pedido = {
-         fecha_pedido: new Date().toISOString(),
-        total_pedido: cart.reduce((sum, item) => {
-          const precioUnitario = Number(item.precio) || 0;
-          const costoEnvio = Number(item.costoEnvio) || 0;
-          const cantidad = item.quantity || 0;
-          return sum + (precioUnitario + costoEnvio) * cantidad;
-        }, 0),
+      // Crear objetos DetallePedido
+      const detallesPedido: PedidoDetalle[] = cart.map((item) => {
+        // Extraemos quantity para que no aparezca en el objeto instrumento
+        const { quantity, ...instrumentoProps } = item;
         
-        detalles: cart.map((item) => {
-          // Extraemos quantity para que no aparezca en el objeto instrumento
-          const { quantity, ...instrumentoProps } = item;
-          
-          return {
-            instrumento: instrumentoProps as Instrumento,
-            cantidad: quantity
-          } as PedidoDetalle;
-        }),
-      };
+        // Crear una nueva instancia de PedidoDetalle
+        return new PedidoDetalle(
+          instrumentoProps as Instrumento, 
+          quantity
+        );
+      });
+      
+      // Crear el objeto Pedido
+      const pedidoParaEnviar = new Pedido(
+        0, // inicializamos con 0, luego llamamos a calcularTotal
+        detallesPedido,
+        undefined,
+        new Date().toISOString()
+      );
+      
+      // Calcular el total
+      pedidoParaEnviar.calcularTotal();
 
       console.log("Pedido que se enviará al backend:", pedidoParaEnviar);
       
@@ -117,7 +120,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  console.log("Total de items en el carrito:", totalItems);
+  
   const totalPrice = cart.reduce((sum, item) => {
     // Convertir costoEnvio a número (0 si es "G")
     const costoEnvio = item.costoEnvio === "G" ? 0 : Number(item.costoEnvio) || 0;
