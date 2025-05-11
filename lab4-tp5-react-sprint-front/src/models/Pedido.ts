@@ -2,11 +2,11 @@ import { Instrumento } from './Instrumento';
 
 export class PedidoDetalle {
     id?: number;
-    instrumento: Instrumento;
     cantidad: number;
+    instrumento: Instrumento;
+    pedido?: Pedido; // Esta propiedad es opcional en el frontend
 
-    constructor(instrumento: Instrumento, cantidad: number, id?: number) {
-        this.id = id;
+    constructor(instrumento: Instrumento, cantidad: number) {
         this.instrumento = instrumento;
         this.cantidad = cantidad;
     }
@@ -14,31 +14,26 @@ export class PedidoDetalle {
 
 export class Pedido {
     id?: number;
-    fecha_pedido?: string;
     total_pedido: number;
-    detalles: PedidoDetalle[];
+    detallePedidos: PedidoDetalle[]; // Nombre exacto como en backend
+    fecha_pedido: string; // Formato ISO
 
-    constructor(total_pedido: number, detalles: PedidoDetalle[], id?: number, fecha_pedido?: string) {
+    constructor(
+        total_pedido: number,
+        detallePedidos: PedidoDetalle[] = [],
+        id?: number,
+        fecha_pedido?: string
+    ) {
         this.id = id;
-        this.fecha_pedido = fecha_pedido;
         this.total_pedido = total_pedido;
-        this.detalles = detalles;
+        this.detallePedidos = detallePedidos;
+        this.fecha_pedido = fecha_pedido || new Date().toISOString();
     }
 
-    // Método helper para añadir un detalle
-    addDetalle(detalle: PedidoDetalle): void {
-        this.detalles.push(detalle);
-    }
 
-    // Método para calcular el total del pedido
-    calcularTotal(): number {
-        this.total_pedido = this.detalles.reduce((sum, detalle) => {
-            const precio = detalle.instrumento.precio || 0;
-            const costoEnvio = detalle.instrumento.costoEnvio === "G" ? 0 :
-                Number(detalle.instrumento.costoEnvio) || 0;
-            return sum + (precio + costoEnvio) * detalle.cantidad;
+    calcularTotal(): void {
+        this.total_pedido = this.detallePedidos.reduce((sum, detalle) => {
+            return sum + (detalle.instrumento.precio * detalle.cantidad);
         }, 0);
-
-        return this.total_pedido;
     }
 }

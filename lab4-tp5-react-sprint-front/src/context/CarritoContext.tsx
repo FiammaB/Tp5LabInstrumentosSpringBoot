@@ -16,7 +16,7 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
-  finalizarPedido: () => Promise<string>;
+  finalizarPedido: () => Promise<Pedido>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -59,7 +59,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCart([]);
   };
 
-  const finalizarPedido = async (): Promise<string> => {
+  const finalizarPedido = async (): Promise<Pedido> => {
     try {
       // Crear objetos DetallePedido
       const detallesPedido: PedidoDetalle[] = cart.map((item) => {
@@ -88,34 +88,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       
       // Llamamos a la función del controlador y manejamos la respuesta
       const response = await pedidoController.createPedido(pedidoParaEnviar);
+    
+    
+        
+        return response;
+
       
-      // Comprobamos que la respuesta existe y tiene la propiedad necesaria
-      if (response && response.id) {
-        clearCart();
-        return `¡Pedido #${response.id} realizado con éxito!`;
-      } else {
-        console.error("La respuesta del servidor no tiene el formato esperado:", response);
-        return "Pedido realizado, pero no se pudo obtener el número de pedido.";
-      }
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
-      
+
+      // Es importante lanzar un error aquí para que handleCheckout lo capture
       if (axios.isAxiosError(error)) {
-        // Manejo específico para errores de Axios
         if (error.response) {
-          // El servidor respondió con un código de estado fuera del rango 2xx
-          return `Error: ${error.response.data.message || error.response.data || 'Error en el servidor'}`;
+          throw new Error(`Error del servidor al guardar pedido: ${error.response.data.message || error.response.data || error.message}`);
         } else if (error.request) {
-          // La petición fue hecha pero no se recibió respuesta
-          return "Error: No se recibió respuesta del servidor. Verifica tu conexión.";
+          throw new Error("Error de red al guardar pedido: No se recibió respuesta del servidor.");
         } else {
-          // Algo ocurrió al configurar la petición
-          return `Error al configurar la petición: ${error.message}`;
+          throw new Error(`Error al configurar la petición para guardar pedido: ${error.message}`);
         }
       }
-      
-      // Error genérico
-      return "Error al realizar el pedido. Intenta de nuevo.";
+      throw new Error("Error desconocido al guardar pedido.");
     }
   };
 

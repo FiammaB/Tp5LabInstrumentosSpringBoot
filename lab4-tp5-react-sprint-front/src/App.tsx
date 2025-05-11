@@ -9,6 +9,7 @@ import Grilla from './components/Grilla';
 import Formulario from './components/Formulario';
 import { CartProvider } from './context/CarritoContext';
 import CartPagina from './components/Cart/pageCarrito'; // Cambié el nombre a "cartPagin" para evitar confusiones
+import PagoExitoso from './components/pagoExitoso';
 // si es un navbar propio
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/grilla' element={<Grilla/>} />
         <Route path='/Formulario' element={<Formulario/>} />
         <Route path='/cart' element={<CartPagina/>} />
+        <Route path='/pago-exitoso' element={<PagoExitoso/>} />
       </Routes>
       </CartProvider>
     </>
