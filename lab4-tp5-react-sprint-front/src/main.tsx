@@ -5,11 +5,14 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import { AuthProvider } from './context/authContext.tsx'; // Importa AuthProvider
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+    <AuthProvider>
     <App />
+    </AuthProvider>
     </BrowserRouter>
     
   </StrictMode>,

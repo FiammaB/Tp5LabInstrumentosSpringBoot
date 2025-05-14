@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './InstrumentoComp.css';
 import { Instrumento } from '../models/Instrumento';
 import { useCart } from '../context/CarritoContext';
+import { useAuth } from '../context/authContext';
 
 type Props = {
   instrumento: Instrumento;
@@ -19,12 +20,15 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento }) => {
 
   const imagen = `/img/${instrumento.imagen}`;
   const iconoCamion = `/img/camion.png`;
+  const auth = useAuth(); 
+  const isVisor= auth.isVisor; 
+  
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation(); // Detiene la propagación del evento
     e.preventDefault(); // Previene el comportamiento por defecto del evento
     
-    if (instrumento && !addedToCart) {
+    if (instrumento && !addedToCart && !isVisor) {
       addToCart(instrumento);
       setAddedToCart(true);
     }
@@ -64,14 +68,14 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento }) => {
       </Link>
       
       <div className="card-buttons">
-        <Link
+       {!isVisor &&<Link
           to={`/detalle/${instrumento.id}`}
           className="btn btn-primary w-100"
         >
           Ver Detalle
         </Link>
-        
-        <button
+}
+        {!isVisor&&<button
           className={`btn px-4 py-2 mt-2 w-100 ${
             addedToCart ? "btn-success" : "btn-primary"
           }`}
@@ -85,7 +89,7 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento }) => {
           ) : (
             "Agregar al carrito"
           )}
-        </button>
+        </button>}
       </div>
     </div>
   );

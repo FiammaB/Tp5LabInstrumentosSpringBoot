@@ -6,6 +6,7 @@ import InstrumentoController from "../controllers/InstrumentoController";
 
 
 const InstrumentosLista: React.FC = () => {
+  
   const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
