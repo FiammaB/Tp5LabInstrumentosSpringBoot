@@ -66,6 +66,7 @@ public class MercadoPagoControlador {
                         .currencyId("ARS")
                         .build();
                 items.add(item);
+
             }
 
             if (items.isEmpty()) {
@@ -75,9 +76,9 @@ public class MercadoPagoControlador {
 
             // Configurar las URLs de redirección después del pago
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:5173/pago-exitoso")
-                    .pending("http://localhost:5173/pago-pendiente")
-                    .failure("http://localhost:5173/pago-fallido")
+                    .success("https://localhost:5173/pago-exitoso")
+                    .pending("https://localhost:5173/pago-pendiente")
+                    .failure("https://localhost:5173/pago-fallido")
                     .build();
 
             // Construir la solicitud de preferencia
@@ -90,12 +91,13 @@ public class MercadoPagoControlador {
                     .externalReference(String.valueOf(pedido.getId()))
                     .build();
 
+
             // Crear la preferencia utilizando el cliente de Mercado Pago
             PreferenceClient client = new PreferenceClient();
             Preference preference = client.create(preferenceRequest);
 
             // Devolver solo el init_point (URL de la página de pago de Mercado Pago)
-            return ResponseEntity.ok(preference.getInitPoint());
+            return ResponseEntity.ok(preference.getId());
 
         } catch (MPException | MPApiException e) {
             e.printStackTrace();

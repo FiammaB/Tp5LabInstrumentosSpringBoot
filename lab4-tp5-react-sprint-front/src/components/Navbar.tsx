@@ -53,7 +53,16 @@ const Navbar = () => {
                     <Link className="nav-link px-3" to="/Grilla">Grilla (Admin)</Link>
                     {/* Si tienes otras rutas de Admin como Formulario, añádelas aquí */}
                     {/* <Link className="nav-link px-3" to="/Formulario">Formulario (Admin)</Link> */}
+
+                     {/* --- NUEVO ENLACE A REPORTES --- */}
+                    {/* Este enlace solo será visible si el usuario es Admin O Operador */}
+                    <Link className="nav-link px-3" to="/reportes/charts">Reportes (Gráficos)</Link>
+                    {/* ----------------------------- */}
+                    
+
                   </>
+                  
+                  
                 )}
 
                 {/* Botón para Cerrar Sesión */}

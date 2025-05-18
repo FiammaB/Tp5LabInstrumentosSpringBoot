@@ -17,6 +17,8 @@ import PrivateRoute from './components/PrivateRoute';
 import { initMercadoPago } from '@mercadopago/sdk-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import ReportesGraficos from './components/ReportesGraficos';
+import ReporteExcelPage from './components/ReporteExcel';
 
 // Inicializar el SDK de Mercado Pago
 initMercadoPago('APP_USR-f81fff20-b21d-4e06-95fe-b73f6c860319', {
@@ -88,6 +90,29 @@ function App() {
             element={
               <PrivateRoute requiredRoles={['Admin']}>
                 <Formulario />
+              </PrivateRoute>
+            }
+          />
+            {/* --- Ruta para la Página de Reportes de Gráficos --- */}
+          {/* Protegida, probablemente solo para Admin u Operador */}
+          <Route
+            path='/reportes/charts' // Define la ruta
+            element={
+              // Define qué roles pueden acceder a esta página de reportes
+              // Basado en el TP, Admin u Operador parece adecuado
+              <PrivateRoute requiredRoles={['Admin']}>
+                <ReportesGraficos /> {/* Renderiza la página de reportes */}
+              </PrivateRoute>
+            }
+          />
+                    {/* --- Nueva Ruta para la Página de Reporte Excel --- */}
+          {/* Protegida, probablemente para los mismos roles que los gráficos */}
+          <Route
+            path='/reportes/excel' // Define la ruta para el reporte Excel
+            element={
+              // Define qué roles pueden acceder a esta página de reporte Excel
+              <PrivateRoute requiredRoles={['Admin']}> {/* Ajusta los roles */}
+                <ReporteExcelPage /> {/* Renderiza la página de reporte Excel */}
               </PrivateRoute>
             }
           />
