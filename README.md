@@ -130,7 +130,7 @@ Este es un proyecto personal para mi portafolio. No busco contribuciones activas
 
 * **Fiamma Brizuela**
    
-    * LinkedIn (https://www.linkedin.com/in/fiamma-brizuela-16195224b)]
+    * LinkedIn (https://www.linkedin.com/in/fiamma-brizuela-16195224b)
 
 ---
 
