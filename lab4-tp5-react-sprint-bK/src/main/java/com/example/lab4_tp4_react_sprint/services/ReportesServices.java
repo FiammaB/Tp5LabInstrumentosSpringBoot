@@ -4,17 +4,27 @@ import com.example.lab4_tp4_react_sprint.DAO.PedidoDAO;
 import com.example.lab4_tp4_react_sprint.models.Instrumento;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.events.PdfDocumentEvent;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.VerticalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import
+        com.itextpdf.layout.properties.HorizontalAlignment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -210,11 +220,71 @@ public class ReportesServices {
         Document document = new Document(pdfDocument);
 
         try {
-            // 3. Añadir contenido al PDF
-            // ... (Código para añadir Título e Información del Instrumento como texto) ...
+            // --- Definir estilos reutilizables
+            PdfFont font = PdfFontFactory.createFont("Helvetica"); // Fuente básica
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
+
+            //estilos para /titulo/cabecera/texto normal
+            Style titleStyle = new Style()
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(ColorConstants.BLUE)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            Style headingStyle = new Style()
+                    .setFont(boldFont)
+                    .setFontSize(14)
+                    .setFontColor(ColorConstants.ORANGE);
+            Style tituloDescripcionStyle = new Style()
+                    .setFont(boldFont)
+                    .setFontSize(14)
+                    .setFontColor(ColorConstants.BLACK);
+            Style normalTextStyle = new Style()
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setFontColor(ColorConstants.BLACK);
+
+            // --- Añadir Encabezado y Pie de Página (Event Handler) ---
+            // Esto es más avanzado y se define como un "evento" del documento PDF
+            // Se ejecutará para cada nueva página.
+            pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, event -> {
+                PdfDocumentEvent docEvent = (PdfDocumentEvent) event;
+                PdfPage page = docEvent.getPage();
+                int pageNum = pdfDocument.getPageNumber(page);
+                PdfCanvas pdfCanvas = new PdfCanvas(page);
+
+                // Dibujar el encabezado (ej. nombre de la empresa o título del reporte)
+                document.showTextAligned(
+                        new Paragraph("Musical Endrix - Ficha Técnica")
+                                .setFont(boldFont)
+                                .setFontSize(10)
+                                .setFontColor(ColorConstants.DARK_GRAY),
+                        pdfDocument.getDefaultPageSize().getWidth() / 2, // Posición X (centro)
+                        pdfDocument.getDefaultPageSize().getTop() - 30, // Posición Y (arriba)
+                        pageNum,
+                        TextAlignment.CENTER,
+                        VerticalAlignment.BOTTOM,
+                        0F
+                );
+
+                // Dibujar el pie de página (ej. número de página)
+                document.showTextAligned(
+                        new Paragraph("Página " + pageNum)
+                                .setFont(font)
+                                .setFontSize(8)
+                                .setFontColor(ColorConstants.GRAY),
+                        pdfDocument.getDefaultPageSize().getWidth() / 2, // Posición X (centro)
+                        pdfDocument.getDefaultPageSize().getBottom() + 20, // Posición Y (abajo)
+                        pageNum,
+                        TextAlignment.CENTER,
+                        VerticalAlignment.TOP,0F // me da error dice q tine q ser float no boolean
+                );
+
+                pdfCanvas.release(); // Liberar el canvas
+            });
 
             // Título
-            document.add(new Paragraph("Ficha Técnica del Instrumento"));
+            document.add(new Paragraph("Ficha Técnica del Instrumento").addStyle(titleStyle));
             document.add(new Paragraph("\n")); // Línea en blanco
 
             // --- Lógica para añadir la Imagen ---
@@ -235,8 +305,8 @@ public class ReportesServices {
                         Image image = new Image(imageData);
 
                         // --- Opcional: Ajustar tamaño o posición de la imagen ---
-                        // image.scaleToFit(AnchoMaximo, AltoMaximo); // Escalar para que quepa
-                        // image.setHorizontalAlignment(HorizontalAlignment.CENTER); // Centrar imagen
+                         image.scaleToFit(400, 300); // Escalar para que quepa
+                         image.setHorizontalAlignment(HorizontalAlignment.CENTER); // Centrar imagen
                         // -------------------------------------------------------
 
                         // Añadir la imagen al documento
@@ -261,22 +331,21 @@ public class ReportesServices {
 
             // Añadir un poco de espacio después de la imagen antes de la info de texto
             document.add(new Paragraph("\n"));
+            document.add(new Paragraph("Detalles del Instrumento").addStyle(headingStyle));
+            // Información del Instrumento (texto con estilos)
 
-
-            // Información del Instrumento (texto)
-            document.add(new Paragraph("Nombre: ").add(new Text(instrumento.getNombre())));
-            // ... (resto de la información de texto como Marca, Modelo, Precio, etc.) ...
-            document.add(new Paragraph("Marca: ").add(new Text(instrumento.getMarca())));
-            document.add(new Paragraph("Modelo: ").add(new Text(instrumento.getModelo()))); // Asegúrate de que este getter sea correcto
-            document.add(new Paragraph("Precio: $").add(new Text(String.valueOf(instrumento.getPrecio()))));
-            document.add(new Paragraph("Cantidad Vendida: ").add(new Text(String.valueOf(instrumento.getCantidadVendida()))));
-            document.add(new Paragraph("Costo Envío: ").add(new Text(instrumento.getCostoEnvio())));
-            document.add(new Paragraph("Categoría: ").add(new Text(instrumento.getCategoriaInstrumento() != null ? instrumento.getCategoriaInstrumento().getDenominacion() : "Sin Categoría")));
+            document.add(new Paragraph("Nombre: ").addStyle(tituloDescripcionStyle).add(new Text(instrumento.getNombre()).addStyle(normalTextStyle)));
+            document.add(new Paragraph("Marca: ").addStyle(tituloDescripcionStyle).add(new Text(instrumento.getMarca()).addStyle(normalTextStyle)));
+            document.add(new Paragraph("Modelo: ").addStyle(tituloDescripcionStyle).add(new Text(instrumento.getModelo()).addStyle(normalTextStyle))); // Usa getModelo()
+            document.add(new Paragraph("Precio: ").addStyle(tituloDescripcionStyle).add(new Text("$" + String.valueOf(instrumento.getPrecio())).addStyle(normalTextStyle)));
+            document.add(new Paragraph("Cantidad Vendida: ").addStyle(tituloDescripcionStyle).add(new Text(String.valueOf(instrumento.getCantidadVendida())).addStyle(normalTextStyle)));
+            document.add(new Paragraph("Costo Envío: ").addStyle(tituloDescripcionStyle).add(new Text(instrumento.getCostoEnvio()).addStyle(normalTextStyle)));
+            document.add(new Paragraph("Categoría: ").addStyle(tituloDescripcionStyle).add(new Text(instrumento.getCategoriaInstrumento() != null ? instrumento.getCategoriaInstrumento().getDenominacion() : "Sin Categoría").addStyle(normalTextStyle)));
 
             // Descripción
             document.add(new Paragraph("\n"));
-            document.add(new Paragraph("Descripción:"));
-            document.add(new Paragraph(instrumento.getDescripcion()));
+            document.add(new Paragraph("Descripción:").addStyle(headingStyle));
+            document.add(new Paragraph(instrumento.getDescripcion()).addStyle(normalTextStyle));
 
 
             // 4. Cerrar el documento

@@ -141,7 +141,17 @@ const InstrumentoDetalle: React.FC = () => {
             {instrumento.costoEnvio === "G" ? "Envío gratis" : instrumento.costoEnvio}
           </span>
         </p>
-
+        <div >
+          {isAdmin && (
+            <button
+              className="btn btn-secondary my-3"
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf || !id}
+            >
+              {downloadingPdf ? 'Generando PDF...' : 'Descargar Ficha Técnica PDF'}
+            </button>
+          )}
+        </div>
         <button
           className={`btn px-4 py-2 mb-4 ${addedToCart ? "btn-success" : "btn-primary"
             }`}
@@ -161,17 +171,7 @@ const InstrumentoDetalle: React.FC = () => {
 
       </div>
 
-      <div >
-        {isAdmin && (
-          <button
-            className="btn btn-secondary my-3"
-            onClick={handleDownloadPdf}
-            disabled={downloadingPdf || !id}
-          >
-            {downloadingPdf ? 'Generando PDF...' : 'Descargar Ficha Técnica PDF'}
-          </button>
-        )}
-      </div>
+
     </div>
 
   );
